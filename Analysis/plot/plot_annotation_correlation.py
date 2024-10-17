@@ -10,21 +10,15 @@ sns.set()
 
 save_dir = cfg.dir_fig + 'annotations/'
 
-labels_all = list(Annotations(1,delay_s=cfg.delay).get_changes_overTime().keys())
-del labels_all[-1]
-for l in range(cfg.nr_of_layers):
-    label = "Alexnet L" + str(l)
-    labels_all.append(label)
-
+labels_all =  ['event', 'location2', 'location3', 'shot', 'normdiff', 'alexnet7', 'alexnet6', 'alexnet5', 'alexnet4', 'alexnet3', 'alexnet2', 'alexnet1', 'alexnet0', 'speech', 'mfcc']
 # Get all annotations together
 annotations_all = dict((label,[]) for label in labels_all)
 for run_nr in cfg.run_numbers:
     annotations_run = Annotations(run_nr,delay_s=cfg.delay).get_changes_overTime()
-    for label in annotations_run.keys():
-        if label == 'alexnet':
-            for l in range(cfg.nr_of_layers):
-                label = "Alexnet L" + str(l)
-                annotations_all[label].extend(annotations_run['alexnet'][l,:])
+    for label in labels_all:
+        if 'alexnet' in label:
+            l = int(label[-1])
+            annotations_all[label].extend(annotations_run['alexnet'][l,:])
         else:
             annotations_all[label].extend(annotations_run[label])
 
@@ -47,10 +41,10 @@ plt.imshow(Rs, vmin=0, vmax=1, interpolation='none', aspect='equal', cmap='summe
 
 labels_plot = []
 for label in labels_all:
-    if label in cfg.label_to_title.keys():
-        labels_plot.append(cfg.label_to_title[label])
+    if 'alexnet' in label:
+        labels_plot.append('Alexnet L' + str(label[-1]))
     else:
-        labels_plot.append(label)
+        labels_plot.append(cfg.label_to_title[label])
 
 plt.yticks(range(len(labels_plot)), labels_plot)
 plt.xticks(range(len(labels_plot)), labels_plot, rotation='vertical')
@@ -58,8 +52,8 @@ plt.xticks(range(len(labels_plot)), labels_plot, rotation='vertical')
 # Set white lines around values
 ax = plt.gca()
 ax.grid(False)
-ax.set_xticks(np.arange(-0.5,13,1),minor=True)
-ax.set_yticks(np.arange(-0.5,13,1),minor=True)
+ax.set_xticks(np.arange(-0.5,15,1),minor=True)
+ax.set_yticks(np.arange(-0.5,15,1),minor=True)
 ax.grid(which='minor', color='k',linestyle='-', linewidth=0.5)
 ax.tick_params(which='minor', bottom=False, left=False)
 

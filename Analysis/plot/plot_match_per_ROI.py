@@ -4,11 +4,12 @@ import config as cfg
 from support.funcs import p_to_arterisks
 import seaborn as sns
 
+
 sns.set()
 dir_results = cfg.dir_fig + 'Analysis results/ROI match/'
 dir_save = cfg.dir_fig + 'Analysis results/ROI match/paper/'
 
-annotation_order = ['normdiff', 'location3', 'location2', 'event']
+annotation_order = ['normdiff', 'location3', 'location2', 'normdiff'] # Normdiff twice to have same subplot width as before. This extra subfigure should be ignored.
 
 # Figure parameters
 barwidth= 0.3
@@ -31,19 +32,17 @@ def ROI_to_text(ROI):
     return texts[ROI]
 
 if __name__ == "__main__":
-
-    # Load results
-    name = 'analysis_all'
-    matches = np.load(dir_results + name + '_matches.npy', allow_pickle=True).item()
-    matches_max = np.load(dir_results + name + '_matches_max.npy', allow_pickle=True).item()
-    p_values = np.load(dir_results + name + '_p_uncorrected.npy', allow_pickle=True).item()
-    significant_labels = np.load(dir_results + name + '_significant_labels_corrected.npy', allow_pickle=True).item()
-
     # Determine ymin and ymax
     ymin = 100
     ymax = 0
+
+    name = 'analysis_all'
+    matches = np.load(dir_results + name + '_matches.npy', allow_pickle=True).item()
+    p_values = np.load(dir_results + name + '_p_uncorrected.npy', allow_pickle=True).item()
+    significant_labels = np.load(dir_results + name + '_significant_labels_corrected.npy', allow_pickle=True).item()
+
     for ROI in cfg.ROIs:
-        this_value = np.asarray(list(matches[ROI].values()))/np.asarray(list(matches_max[ROI].values()))
+        this_value = np.asarray(list(matches[ROI].values()))
         this_max = np.max(this_value)
         this_min = np.min(this_value)
 
@@ -68,7 +67,7 @@ if __name__ == "__main__":
                 x = int(ROI_idx / 2) + barwidth / 2
 
             # Compute relative correlation
-            y = matches[ROI][label] / matches_max[ROI][label]
+            y = matches[ROI][label]
             ys_all.append(y)
 
             # Compute p text
@@ -81,8 +80,9 @@ if __name__ == "__main__":
             plt.bar(x, y, width=barwidth, color=cfg.ROI_colors[ROI])
 
 
+
+            #  p values as circle if not surviving correction for multiple comparisons
             if p_values[ROI][label] < 0.05 and label not in significant_labels[ROI]:
-                # 'o' if p is below 0.05 but not surviving correction for multiple comparisons
                 plt.text(x, y, 'o', ha='center', fontsize='large')
             else:
                 plt.text(x, y, p_text, ha='center', fontsize='large')
@@ -103,7 +103,7 @@ if __name__ == "__main__":
             plt.sca(a)
             plt.ylim([y_min, y_max])
             if a_idx == 0:
-                plt.ylabel('Relative R', fontsize=fontsize)
+                plt.ylabel('Partial r', fontsize=fontsize)
                 plt.yticks(fontsize=fontsize_numbers)
             else:
                 a.set_yticklabels([])

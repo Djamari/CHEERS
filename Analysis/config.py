@@ -11,11 +11,12 @@ run_numbers = [1,2,3,5,6,7,8]
 
 # Description of analysis: [label of interest]: [covariate1, covariate2, ...]
 analyses = {
-    'normdiff': ['location3', 'location2', 'event'],
-    'location2': ['alexnet', 'normdiff', 'shot', 'event'],
-    'location3': ['alexnet', 'normdiff', 'shot', 'event'],
-    'event': ['alexnet', 'normdiff', 'shot', 'location3', 'location2'],
-    'shot': ['alexnet', 'normdiff', 'location2', 'location3', 'event']
+    'shot': ['alexnet', 'normdiff', 'location2', 'location3', 'event',  'mfcc', 'speech'],
+    'event': ['alexnet', 'normdiff', 'shot', 'location3', 'location2', 'mfcc', 'speech'],
+    'normdiff': ['location3', 'location2', 'event',  'mfcc', 'speech'],
+    'location2': ['alexnet', 'normdiff', 'shot', 'event',  'mfcc', 'speech'],
+    'location3': ['alexnet', 'normdiff', 'shot', 'event',  'mfcc', 'speech'],
+    'speech': ['alexnet', 'normdiff', 'shot', 'location3', 'location2', 'mfcc', 'event'],
 }
 
 supplementary_analyses = ['shot']
@@ -64,17 +65,21 @@ label_to_title = {
     'shot': 'Shots',
     'location3': 'Small-scale locations',
     'location2': 'Large-scale locations',
-    'event': 'Events'
+    'event': 'Events',
+    'speech': 'Speech',
+    'mfcc': 'MFCC'
 }
 
-whole_brain_slices = {'normdiff':  [(-7, -89, 5), # EV
-                    (-26,-54,-12)], # PPA
-                      'location3': [(27, -40, -8), # PPA
+whole_brain_slices = {'normdiff':  [(-7, -89, 5), 
+                    (-25,-54,-12)], 
+                      'location3': [(27, -40, -8), 
                                     (-33,-88,8)],
-                    'location2': [(27, -40, -8), # PPA
-                                    (-33,-88,8)],# PPA
-                      'event': [(-12, 54, 18), #
-                                (-45,-60,-18)] #
+                    'location2': [(27, -40, -8), 
+                                    (-33,-88,8)],
+                      'event': [(-12, 54, 18), 
+                                (-45,-60,-18)], 
+                    'speech': [(-12, 54, 18), 
+                                (-45,-60,-18)] 
                       }
 
 
@@ -93,6 +98,20 @@ nTRs = {
     6: 439,
     7: 542,
     8: 338
+}
+
+# Start of run in the global stimulus is computed by taking each run duration (timing + duration of last shot in
+# location annotations) and subtracting the all delays of the current and previous runs at the start of each run (i.e.,
+# the first onset time in the location annotations)
+speech_annotations_start_run = {
+    1: 0.0,
+    2: 886.0,
+    3: 1752.08,
+    4: 2612.16,
+    5: 3572.20,
+    6: 4480.28,
+    7: 5342.36,
+    8: 6410.44
 }
 
 count = 0

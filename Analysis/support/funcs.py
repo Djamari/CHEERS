@@ -108,7 +108,6 @@ def p_to_arterisks(p):
 def Bonferroni_for_ROIs(ps):
     ROIs = cfg.ROIs
     m = len(ROIs)
-    analyses_labels = list(cfg.analyses.keys())
     significant_labels_dict = dict((ROI, []) for ROI in ROIs)
 
     # Go through ROIs and analyses

@@ -37,17 +37,16 @@ def ROI_to_text(ROI):
     return texts[ROI]
 
 if __name__ == "__main__":
-
-    # Load results
-    name = "normal_correlation_ROIs_"
-    matches = np.load(dir_results + name + '_matches.npy', allow_pickle=True).item()
-    matches_max = np.load(dir_results + name + '_matches_max.npy', allow_pickle=True).item()
-
     # Determine ymin and ymax
     ymin = 100
     ymax = 0
+
+
+    name = "normal_correlation_ROIs_"
+    matches = np.load(dir_results + name + '_matches.npy', allow_pickle=True).item()
+
     for ROI in cfg.ROIs:
-        this_value = np.asarray(list(matches[ROI].values()))/np.asarray(list(matches_max[ROI].values()))
+        this_value = np.asarray(list(matches[ROI].values()))
         this_max = np.max(this_value)
         this_min = np.min(this_value)
 
@@ -59,7 +58,6 @@ if __name__ == "__main__":
     nr_labels = len(analysis)
 
     matches = np.load(dir_results + name + '_matches.npy', allow_pickle=True).item()
-    matches_max = np.load(dir_results + name + '_matches_max.npy', allow_pickle=True).item()
 
     p_values = np.load(dir_results + name + '_p_uncorrected.npy', allow_pickle=True).item()
     significant_labels = np.load(dir_results + name + '_significant_labels_corrected.npy', allow_pickle=True).item()
@@ -78,7 +76,7 @@ if __name__ == "__main__":
                 x = int(ROI_idx / 2) + barwidth / 2
 
             # Compute relative correlation
-            y = matches[ROI][label] / matches_max[ROI][label]
+            y = matches[ROI][label]
             ys_all.append(y)
 
             # Compute p text
@@ -99,21 +97,22 @@ if __name__ == "__main__":
         plt.title(label_to_title(label), fontsize=fontsize)
 
         # Layout
-        plt.hlines(0,-1, nr_labels + 1, 'k')
+        plt.axhline(0, color='k')
         plt.xlim([-0.5,2.5])
         plt.xticks(np.arange(len(cfg.ROIs)/2), x_labels, fontsize=fontsize)
 
     # Compute ylimits and set numbers
-    y_min = np.min(ys_all) - 0.01
+    y_min = -0.001 # set ymin to 0
     y_max = np.max(ys_all) + 0.01
     for a_idx, a in enumerate(ax):
         plt.sca(a)
         plt.ylim([y_min, y_max])
         if a_idx == 0:
-            plt.ylabel('Relative R', fontsize=fontsize)
+            plt.ylabel("Pearson's r", fontsize=fontsize)
             plt.yticks(fontsize=fontsize)
         else:
             a.set_yticklabels([])
+
     plt.tight_layout()
 
     # Save

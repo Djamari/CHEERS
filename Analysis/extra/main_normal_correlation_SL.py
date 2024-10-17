@@ -7,7 +7,7 @@ import sys
 sys.path.append("../final analysis")
 import nibabel as nib
 import numpy as np
-from extra.main_normal_correlation_ROI import get_max_correlation, get_full_timeline_annotations, get_full_timeline
+from extra.main_normal_correlation_ROI import get_full_timeline_annotations, get_full_timeline
 
 savedir = cfg.dir_fig + 'Analysis results/extra/searchlights/'
 save_intermediate_results = '/home/djaoet/wrkgrp/Djamari/StudyForrest/intermediate_results/'
@@ -41,11 +41,9 @@ def get_correlation(strengths_allRuns, annotations_perRun):
 def get_correlation_and_save(strengths_allRuns, annotation_matrix, savename):
     Rs = get_correlation(strengths_allRuns, annotation_matrix)
     ps, match_null = permutation_test(strengths_allRuns, get_correlation, "None", False, annotation_matrix)
-    max_cor = get_max_correlation(strengths_allRuns, annotation_matrix)
     np.save(savename + "R", Rs)
     np.save(savename + "p", ps)
     np.save(savename + "match_null", match_null)
-    np.save(savename + "maxRs", max_cor)
 
 def main_analysis_correlation(searchlights):
     labels_this_analysis = list(cfg.analyses.keys())
@@ -64,7 +62,7 @@ def main_analysis_correlation(searchlights):
     # Perform analysis per SL
     for SL_idx, voxel_indices in enumerate(tqdm(searchlights)):
         # Skip if already done
-        filename = save_intermediate_results + "analysis_normalR_" + "SL" + str(SL_idx) + "_maxRs.npy"
+        filename = save_intermediate_results + "analysis_normalR_" + "SL" + str(SL_idx) + "R.npy"
         if exists(filename):
             continue
 
@@ -99,8 +97,6 @@ def main_analysis_correlation(searchlights):
 
 
 if __name__ == '__main__':
-
-
     # Get searchlight information
     coordinates = np.load(SL_dir + 'SL_voxelCoordinates_' + params_name + '.npy', allow_pickle=True)
     searchlights = np.load(SL_dir + 'SL_voxelsIndices_' + params_name + '.npy', allow_pickle=True)
@@ -112,19 +108,15 @@ if __name__ == '__main__':
     print("Start plotting")
     Rs_SLs_allRuns = np.zeros((len(searchlights), len(cfg.analyses.keys())))
     ps_SLs_allRuns = np.zeros((len(searchlights), len(cfg.analyses.keys())))
-    maxRs_SLs_allRuns = np.zeros((len(searchlights), len(cfg.analyses.keys())))
+
+    for SL_idx, voxel_indices in enumerate(tqdm(searchlights)):
+        Rs = np.load(save_intermediate_results + "analysis_normalR_" + "SL" + str(SL_idx) + "_R.npy")
+        ps = np.load(save_intermediate_results + "analysis_normalR_" + "SL" + str(SL_idx) + "_p.npy")
+
+        Rs_SLs_allRuns[SL_idx][:] = Rs
+        ps_SLs_allRuns[SL_idx][:] = ps
 
     for label_idx, analysis_label in enumerate(cfg.analyses.keys()):  # One figure per label
-        for SL_idx, voxel_indices in enumerate(tqdm(searchlights)):
-            Rs = np.load(save_intermediate_results  + "analysis_normalR_" + "SL" + str(SL_idx) + "_R.npy")
-            ps = np.load(save_intermediate_results  + "analysis_normalR_" + "SL" + str(SL_idx) + "_p.npy")
-            maxRs = np.load(save_intermediate_results + "analysis_normalR_" +  "SL" + str(SL_idx) + "_maxRs.npy")
-
-            Rs_SLs_allRuns[SL_idx][:] = Rs
-            ps_SLs_allRuns[SL_idx][:] = ps
-            maxRs_SLs_allRuns[SL_idx][:] = maxRs
-
-
 
         # Compute which p-value survives correction
         SLs_significant_corrected, highest_p = BH_correction_Sls(ps_SLs_allRuns[:, label_idx],np.arange(ps_SLs_allRuns[:, label_idx].shape[0]))
@@ -138,7 +130,7 @@ if __name__ == '__main__':
         sigvox_corrected = np.zeros((x_max, y_max, z_max))
 
         for SL_idx, voxel_indices in enumerate(tqdm(searchlights)):
-            match_ratio = Rs_SLs_allRuns[SL_idx][label_idx]/maxRs_SLs_allRuns[SL_idx][label_idx]
+            match_ratio = Rs_SLs_allRuns[SL_idx][label_idx]
 
             for vox in voxel_indices:
                 x, y, z = coordinates[vox]
@@ -163,13 +155,12 @@ if __name__ == '__main__':
 
         # Convert to nifti
         map_nifti = nib.Nifti1Image(mean_ratios, affine)
-        nib.save(map_nifti, savedir + 'analysis_normalR_' + analysis_label + '_Rs_relative.nii')
+        nib.save(map_nifti, savedir + 'analysis_normalR_' + analysis_label + '_Rs.nii')
 
         # Threshold at p<0.05
         map_nifti = nib.Nifti1Image(mean_ratios_thres_uncorrected, affine)
-        nib.save(map_nifti, savedir +  'analysis_normalR_' + analysis_label + '_Rs_relative_thresholded_uncorrected.nii')
+        nib.save(map_nifti, savedir +  'analysis_normalR_' + analysis_label + '_Rs_thresholded_uncorrected.nii')
 
         # Threshold based on correction
         map_nifti = nib.Nifti1Image(mean_ratios_thres_corrected, affine)
-        nib.save(map_nifti, savedir +  'analysis_normalR_' + analysis_label + '_Rs_relative_' + '_thresholded_corrected.nii')
-
+        nib.save(map_nifti, savedir +  'analysis_normalR_' + analysis_label + '_Rs_thresholded_corrected.nii')
