@@ -9,7 +9,7 @@ subjects = cfg.subjectNumbers;
 
 for n = subjects
     subjectName = ['sub-', num2str(n, '%02d')];
-    dir_sub_func = ['/huge/djaoet/StudyForrest/func/' , subjectName, '/ses-movie/func/'];
+    dir_sub_func = ['[redacted]/StudyForrest/func/' , subjectName, '/ses-movie/func/'];
     
     disp('---------');
     disp(['Start of ', subjectName]);

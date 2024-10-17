@@ -6,7 +6,7 @@
 % ----------------------------------------------------------------------
 %%
 
-addpath('/home/djaoet/Toolboxes/spm12');
+addpath('[redacted]/Toolboxes/spm12');
 
 cfg = get_cfg();
 subjects = cfg.subjectNumbers;
@@ -16,14 +16,14 @@ for n = subjects
 
     matlabbatch{1}.spm.spatial.realign.estimate.data = {
                                                         {
-                                                        ['/huge/djaoet/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-1_space-T1w_desc-unsmDenoised_bold.nii,1']
-                                                        ['/huge/djaoet/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-2_space-T1w_desc-unsmDenoised_bold.nii,1']
-                                                        ['/huge/djaoet/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-3_space-T1w_desc-unsmDenoised_bold.nii,1']
-                                                        ['/huge/djaoet/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-4_space-T1w_desc-unsmDenoised_bold.nii,1']
-                                                        ['/huge/djaoet/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-5_space-T1w_desc-unsmDenoised_bold.nii,1']
-                                                        ['/huge/djaoet/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-6_space-T1w_desc-unsmDenoised_bold.nii,1']
-                                                        ['/huge/djaoet/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-7_space-T1w_desc-unsmDenoised_bold.nii,1']
-                                                        ['/huge/djaoet/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-8_space-T1w_desc-unsmDenoised_bold.nii,1']
+                                                        ['[redacted]/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-1_space-T1w_desc-unsmDenoised_bold.nii,1']
+                                                        ['[redacted]/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-2_space-T1w_desc-unsmDenoised_bold.nii,1']
+                                                        ['[redacted]/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-3_space-T1w_desc-unsmDenoised_bold.nii,1']
+                                                        ['[redacted]/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-4_space-T1w_desc-unsmDenoised_bold.nii,1']
+                                                        ['[redacted]/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-5_space-T1w_desc-unsmDenoised_bold.nii,1']
+                                                        ['[redacted]/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-6_space-T1w_desc-unsmDenoised_bold.nii,1']
+                                                        ['[redacted]/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-7_space-T1w_desc-unsmDenoised_bold.nii,1']
+                                                        ['[redacted]/StudyForrest/func/', subjectName, '/ses-movie/func/', subjectName, '_ses-movie_task-movie_run-8_space-T1w_desc-unsmDenoised_bold.nii,1']
                                                         }
                                                         }';
    

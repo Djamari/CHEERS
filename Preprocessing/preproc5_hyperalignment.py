@@ -5,8 +5,8 @@ import time
 run_nr = 4
 
 # Directories
-datadir = '/home/djaoet/wrkgrp/Djamari/StudyForrest/data raw/func/'
-maskdir =  '/home/djaoet/wrkgrp/Djamari/StudyForrest/data raw/masks/'
+datadir = '[redacted]/StudyForrest/data raw/func/'
+maskdir =  '[redacted]/StudyForrest/data raw/masks/'
 saved_variables_dir = 'saved_variables/'
 
 # Function to compute the reference subject based on ISS
